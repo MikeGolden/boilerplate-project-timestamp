@@ -47,21 +47,22 @@ app.get("/api/timestamp/:date", (req, res) => {
 app.get('/api/:date', (req, res) => {
   const inputDate = req.params.date;
 
-  if (inputDate) {
+  if (inputDate === undefined) {
+    const currentUnixTimestamp = new Date().getTime();
+    const currentUtcFormattedDate = new Date().toUTCString();
+    res.json({ unix: currentUnixTimestamp, utc: currentUtcFormattedDate });
+  } else {
     const timestamp = Date.parse(inputDate);
     
     if (!isNaN(timestamp)) {
       const unixTimestamp = new Date(inputDate).getTime();
-      res.json({ unix: unixTimestamp });
+      const utcFormattedDate = new Date(inputDate).toUTCString();
+      res.json({ unix: unixTimestamp, utc: utcFormattedDate });
     } else {
-      res.status(400).json({ error: 'Invalid date format' });
+      res.json({ error: 'Invalid Date' });
     }
-  } else {
-    const currentUnixTimestamp = new Date().getTime();
-    res.json({ unix: currentUnixTimestamp });
   }
 });
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
