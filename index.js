@@ -54,10 +54,10 @@ app.get('/api/:date?', (req, res) => {
   } else {
     const timestamp = Date.parse(inputDate);
     
-    if (/\d{5,}/.test(inputDate)) {
+    if (!isNaN(timestamp)) {
       const unixTimestamp = new Date(inputDate).getTime();
       const utcFormattedDate = new Date(inputDate).toUTCString();
-      res.json({ unix: inputDate, utc: utcFormattedDate });
+      res.json({ unix: unixTimestamp, utc: utcFormattedDate });
     } else {
       res.json({ error: 'Invalid Date' });
     }
