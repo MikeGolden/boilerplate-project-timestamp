@@ -49,15 +49,21 @@ app.get('/api/:date?', (req, res) => {
 
   if (inputDate === undefined) {
     const currentUnixTimestamp = new Date().getTime();
-    const currentUtcFormattedDate = new Date().toUTCString();
+    const currentUtcFormattedDate = new Date(currentUnixTimestamp).toUTCString();
     res.json({ unix: currentUnixTimestamp, utc: currentUtcFormattedDate });
   } else {
-    const timestamp = Date.parse(inputDate);
-    
+    const timestamp = parseInt(inputDate);
+
     if (!isNaN(timestamp)) {
-      const unixTimestamp = new Date(inputDate).getTime();
-      const utcFormattedDate = new Date(inputDate).toUTCString();
-      res.json({ unix: unixTimestamp, utc: utcFormattedDate });
+      const dateObject = new Date(timestamp);
+      
+      if (!isNaN(dateObject.getTime())) {
+        const unixTimestamp = dateObject.getTime();
+        const utcFormattedDate = dateObject.toUTCString();
+        res.json({ unix: unixTimestamp, utc: utcFormattedDate });
+      } else {
+        res.json({ error: 'Invalid Date' });
+      }
     } else {
       res.json({ error: 'Invalid Date' });
     }
