@@ -44,7 +44,7 @@ app.get("/api/timestamp/:date", (req, res) => {
   }
 });
 
-app.get('/api/:date?', (req, res) => {
+app.get('/api/:date', (req, res) => {
   const inputDate = req.params.date;
 
   if (inputDate === undefined) {
@@ -70,25 +70,7 @@ app.get('/api/:date?', (req, res) => {
   }
 });
 
-app.get('/api/:date', (req, res) => {
-  const inputDate = req.params.date;
 
-  if (inputDate === undefined) {
-    const currentUnixTimestamp = new Date().getTime();
-    const currentUtcFormattedDate = new Date().toUTCString();
-    res.json({ unix: currentUnixTimestamp, utc: currentUtcFormattedDate });
-  } else {
-    const timestamp = Date.parse(inputDate);
-    
-    if (!isNaN(timestamp)) {
-      const unixTimestamp = new Date(inputDate).getTime();
-      const utcFormattedDate = new Date(inputDate).toUTCString();
-      res.json({ unix: unixTimestamp, utc: utcFormattedDate });
-    } else {
-      res.json({ error: 'Invalid Date' });
-    }
-  }
-});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
