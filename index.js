@@ -56,7 +56,7 @@ app.get('/api/:date?', (req, res) => {
     
     if (/\d{5,}/.test(inputDate)) {
       const unixTimestamp = new Date(inputDate).getTime();
-      const utcFormattedDate = inputDate.toUTCString();
+      let utcFormattedDate = new Date(inputDate).toUTCString();
       console.log(utcFormattedDate);
       res.json({ unix: inputDate, utc: utcFormattedDate });
     } else {
