@@ -44,7 +44,7 @@ app.get("/api/timestamp/:date", (req, res) => {
   }
 });
 
-app.get('/api/:date', (req, res) => {
+app.get('/api/:date?', (req, res) => {
   const inputDate = req.params.date;
 
   if (inputDate === undefined) {
