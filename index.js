@@ -23,51 +23,20 @@ app.get("/", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-/*
-app.get("/api/timestamp/:date", (req, res) => {
-  let dateString = req.params.date_string;
 
-  //A 4 digit number is a valid ISO-8601 for the beginning of that year
-  //5 digits or more must be a unix time, until we reach a year 10,000 problem
-  if (/\d{5,}/.test(dateString)) {
-    let dateInt = parseInt(dateString);
-    //Date regards numbers as unix timestamps, strings are processed differently
-    res.json({ unix: dateString, utc: new Date(dateInt).toUTCString() });
+
+app.get("/api", function(req, res) {
+  res.json({unix: new Date().getTime(), "utc": new Date().toUTCString()})
+})
+
+app.get("/api/:date?", function(req, res, err) {
+  let dateString = req.params.date.toString();
+  if ((parseInt(dateString) !== NaN) && (dateString.search(/-/g) == -1) && (dateString.search(/\s/g) == -1)) {
+    res.json({"unix": new Date(parseInt(dateString)).getTime(), "utc": new Date(parseInt(dateString)).toUTCString()});
+  } else if (new Date(dateString) == "Invalid Date") {
+    res.json({"error": "Invalid Date"});
   } else {
-    let dateObject = new Date(dateString);
-
-    if (dateObject.toString() === "Invalid Date") {
-      res.json({ error: "Invalid Date" });
-    } else {
-      res.json({ unix: dateObject.valueOf(), utc: dateObject.toUTCString() });
-    }
-  }
-});
-*/
-
-app.get('/api/:date?', (req, res) => {
-  const inputDate = req.params.date;
-
-  if (inputDate === undefined) {
-    const currentUnixTimestamp = new Date().getTime();
-    const currentUtcFormattedDate = new Date(currentUnixTimestamp).toUTCString();
-    res.json({ unix: currentUnixTimestamp, utc: currentUtcFormattedDate });
-  } else {
-    const timestamp = parseInt(inputDate);
-
-    if (!isNaN(timestamp)) {
-      const dateObject = new Date(timestamp);
-      
-      if (!isNaN(dateObject.getTime())) {
-        const unixTimestamp = dateObject.getTime();
-        const utcFormattedDate = dateObject.toUTCString();
-        res.json({ unix: unixTimestamp, utc: utcFormattedDate });
-      } else {
-        res.json({ error: 'Invalid Date' });
-      }
-    } else {
-      res.json({ error: 'Invalid Date' });
-    }
+    res.json({"unix": new Date(dateString).getTime(), "utc": new Date(dateString).toUTCString()});
   }
 });
 
