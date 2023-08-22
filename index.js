@@ -52,25 +52,17 @@ app.get('/api/:date', (req, res) => {
     const currentUtcFormattedDate = new Date().toUTCString();
     res.json({ unix: currentUnixTimestamp, utc: currentUtcFormattedDate });
   } else {
-    const timestamp = parseInt(inputDate);
-
+    const timestamp = Date.parse(inputDate);
+    
     if (!isNaN(timestamp)) {
-      const dateObject = new Date(timestamp);
-      
-      if (dateObject.toString() !== 'Invalid Date') {
-        const unixTimestamp = dateObject.getTime();
-        const utcFormattedDate = dateObject.toUTCString();
-        res.json({ unix: unixTimestamp, utc: utcFormattedDate });
-      } else {
-        res.json({ error: 'Invalid Date' });
-      }
+      const unixTimestamp = new Date(inputDate).getTime();
+      const utcFormattedDate = new Date(inputDate).toUTCString();
+      res.json({ unix: unixTimestamp, utc: utcFormattedDate });
     } else {
       res.json({ error: 'Invalid Date' });
     }
   }
 });
-
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
